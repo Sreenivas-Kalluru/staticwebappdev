@@ -6,11 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <title>Static Web App</title>
+  <script>
+    let getXmlValue = function(str, key) {
+  var res= str.substring(
+    str.lastIndexOf('<' + key + '>') + ('<' + key + '>').length,
+    str.lastIndexOf('</' + key + '>')
+  );
+
+  return res.replace("<![CDATA[","").replace("]]>","");
+}
+
+    function UserAction() {
+      debugger
+      var xhttp = new XMLHttpRequest();
+      
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+           // Typical action to be performed when the document is ready:
+           var response = xhttp.responseText;
+          
+          var cssVal=  getXmlValue(response, 'cssIncludes');
+         var javaScriptVal=   getXmlValue(response, 'javascriptIncludes');
+        var footerVal=    getXmlValue(response, 'footerHtml');
+         var headerVal=   getXmlValue(response, 'headerHtml');
+         var uhfInfo = {
+          cssIncludes: cssVal,
+          javascriptIncludes: javaScriptVal,
+          headerHtml: headerVal,
+          footerHtml: footerVal
+    };
+ var jsonResponse=   JSON.stringify(uhfInfo);
+ console.log(jsonResponse);
+ //console.log(uhfInfo);
+           /* console.log(cssVal);
+            console.log(uhfInfo);
+            console.log(headerVal);
+            console.log(footerVal);*/
+           
+        }
+      }
+    xhttp.open("GET", "https://uhf.microsoft.com/en-US/shell/xml/MSOpenjdk?headerId=MSOpenjdkHeader&footerid=MSOpenjdkFooter&CookieComplianceEnabled=true", true);
+    //xhttp.setRequestHeader("user-agent", "Microsoft");
+    xhttp.send();
+    }
+  </script>
 </head>
 
 <body>
   <main>
     <h1>Static Web App preview appication - preview</h1>
+    <button type="submit" onclick="UserAction()">Search</button>
   </main>
 </body>
 
